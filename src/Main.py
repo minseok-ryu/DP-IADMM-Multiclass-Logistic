@@ -11,8 +11,11 @@ from gpuinfo import GPUInfo
 def main(Instance, Agent, Algorithm, Hyperparameter, ScalingConst, Epsilon, TrainingSteps, DisplaySteps):
   
   GPU = GPUInfo.check_empty() # Check if GPU is used.
-  print("**********************GPU=", GPU)
-    
+  if len(GPU) > 0:
+    print("Running on GPU:", GPU)
+  else:
+    print("Running on CPU:", GPU)
+
   ## Parameters
   par = Parameters()
   par.Instance = Instance
@@ -28,9 +31,14 @@ def main(Instance, Agent, Algorithm, Hyperparameter, ScalingConst, Epsilon, Trai
   if par.Instance =="MNIST":            
     x_test, y_test, x_train_new, y_train_new, x_train_agent, y_train_agent = Read_MNIST(par, Agent)   
     par.total_data = x_train_new.shape[0]  
-  if par.Instance =="FEMNIST":        
+  elif par.Instance =="FEMNIST":        
     x_test, y_test, x_train_new, y_train_new, x_train_agent, y_train_agent = Read_FEMNIST(par, Agent)
     par.total_data = x_train_new.shape[0]    
+  elif par.Instance =="CIFAR10":        
+    x_test, y_test, x_train_new, y_train_new, x_train_agent, y_train_agent = Read_CIFAR10(par, Agent)
+    par.total_data = x_train_new.shape[0]
+  else:
+    raise AssertionError("Unexpected value of 'par.Instance'!", par.Instance)
   # print("par.total_data=",par.total_data)  
   
   #### Write output  
@@ -64,17 +72,17 @@ def main(Instance, Agent, Algorithm, Hyperparameter, ScalingConst, Epsilon, Trai
   training_cost = "cost (training)=%s \n"%( cost )
   testing_accuracy = "accuracy (testing)=%s \n"%( accuracy )
   
-  print(GPU_is)
-  print(Instance_Name)
-  print(Agent_num)    
-  print(Feature_num)    
-  print(Class_num)      
-  print(Algorithm_Name)  
-  print(Hyperparameter_Name)  
-  print(ScalingConst_Name)    
-  print(DP_Epsilon)    
-  print(training_cost)
-  print(testing_accuracy)
+  print(GPU_is, end='')
+  print(Instance_Name, end='')
+  print(Agent_num, end='')    
+  print(Feature_num, end='')
+  print(Class_num, end='')
+  print(Algorithm_Name, end='')
+  print(Hyperparameter_Name, end='')
+  print(ScalingConst_Name, end='')
+  print(DP_Epsilon, end='')
+  print(training_cost, end='')
+  print(testing_accuracy, end='')
   file1.write("\n \n")
   file1.write(GPU_is)
   file1.write(Instance_Name)  
