@@ -25,7 +25,7 @@ def Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration
         Temp = (np.arange(par.num_classes) == y_train_agent[p][...,None]).astype(int) ## Ip X K
         y_train_Bin.append(Temp)
 
-    Z_Change = 0; Avg_Noise_Mag = 0; Grad_Time = 0; Noise_Time = 0; Total_Epoch = 10;
+    Z_Change = 0; Avg_Noise_Mag = 0; Grad_Time = 0; Noise_Time = 0; Total_Epoch = 5;
     for p in range(par.split_number):       
         start_grad = time.time()       
         for epoch in range(Total_Epoch):
@@ -82,7 +82,7 @@ def Base_First_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, Itera
         Temp = (np.arange(par.num_classes) == y_train_agent[p][...,None]).astype(int) ## Ip X K
         y_train_Bin.append(Temp)
     
-    Z_Change = 0; Avg_Noise_Mag = 0; Grad_Time = 0; Noise_Time = 0; Total_Epoch = 10;
+    Z_Change = 0; Avg_Noise_Mag = 0; Grad_Time = 0; Noise_Time = 0; Total_Epoch = 5;
     for p in range(par.split_number):                
         start_grad = time.time()                             
         for epoch in range(Total_Epoch):
