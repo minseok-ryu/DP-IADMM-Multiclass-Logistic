@@ -1,5 +1,5 @@
-import numpy as np #(activate this if CPU is used)
-# import cupy as np #(activate this if GPU is used)
+# import numpy as np #(activate this if CPU is used)
+import cupy as np #(activate this if GPU is used)
 
 import math
 from scipy.stats import matrix_normal
@@ -52,12 +52,16 @@ def generate_laplacian_noise(par, H, num_data, x_train, y_train_Bin, tilde_xi):
 def calculate_eta_Base(par,num_data, Iteration):
     
     delta = 1e-6  ## (epsilon, delta)-differential privacy
-    c1 = num_data*1
-    c3 = num_data*0.25
-    cw = math.sqrt( par.num_features*par.num_classes*4 )
+    # c1 = num_data*1
+    c1 = math.sqrt( par.num_features*par.num_classes )
+    # c3 = num_data*0.25
+    c3 = par.num_features*par.num_classes
+    c4 = 2.0
+    # cw = math.sqrt( par.num_features*par.num_classes*4 )
+    cw = par.num_features*par.num_classes
     
     if par.bar_eps_str != "infty":      
-        par.eta = 1.0 / ( c3 + 4.0*c1*math.sqrt( par.num_features*par.num_classes*(Iteration+1)*math.log(1.25/delta)  )/(num_data*float(par.bar_eps_str)*cw)  )        
+        par.eta = 1.0 / ( c3 + par.gamma*c4/par.split_number + 4.0*c1*math.sqrt( par.num_features*par.num_classes*(Iteration+1)*math.log(1.25/delta)  )/(num_data*float(par.bar_eps_str)*cw)  )        
     else:
         par.eta = 1.0 / c3 
                 

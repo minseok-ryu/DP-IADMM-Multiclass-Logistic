@@ -1,5 +1,5 @@
-import numpy as np #(activate this if CPU is used)
-# import cupy as np #(activate this if GPU is used)
+# import numpy as np #(activate this if CPU is used)
+import cupy as np #(activate this if GPU is used)
 
 import math
 import time
@@ -54,7 +54,7 @@ def DP_IADMM(par, x_train_agent, y_train_agent, x_train_new, y_train_new, x_test
 
         ### Display intermediat results
         if iteration % par.display_step == 0: 
-            H = calculate_hypothesis(par.W_val, x_train_new) ## I x K matrix (see Functions.py)                        
+            H = calculate_hypothesis(par.W_val, x_train_new) ## I x K matrix (see Functions.py)    
             cost = calculate_cost(par, num_data, H, y_train_Bin)  ## Compute the objective function value (see Functions.py)
             accuracy_test = calculate_accuracy(par, par.W_val, x_test, y_test)   ## Compute testing accuracy (see Functions.py)        
             residual = calculate_residual(par) ## Compute concensus violation (see Functions.py)

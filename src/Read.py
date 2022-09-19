@@ -1,5 +1,5 @@
-import numpy as np #(activate this if CPU is used)
-# import cupy as np #(activate this if GPU is used)
+# import numpy as np #(activate this if CPU is used)
+import cupy as np #(activate this if GPU is used)
 
 from mlxtend.data import loadlocal_mnist
 import json
