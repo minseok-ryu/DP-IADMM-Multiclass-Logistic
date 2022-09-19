@@ -25,10 +25,11 @@ def Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration
         Temp = (np.arange(par.num_classes) == y_train_agent[p][...,None]).astype(int) ## Ip X K
         y_train_Bin.append(Temp)
 
-    Z_Change = 0; Avg_Noise_Mag = 0; Grad_Time = 0; Noise_Time = 0; Total_Epoch = 5;
+    Z_Change = 0; Avg_Noise_Mag = 0; Grad_Time = 0; Noise_Time = 0; 
     for p in range(par.split_number):       
-        start_grad = time.time()       
-        for epoch in range(Total_Epoch):
+        start_grad = time.time()               
+        temp_sum = np.zeros_like(par.Z_val[p])         
+        for epoch in range(par.num_local_epoch):
 
             H=calculate_hypothesis(par.Z_val[p], x_train_agent[p]) ## I_p x K matrix  (see Functions.py)        
             grad = calculate_gradient(par, par.total_data, H, x_train_agent[p], y_train_Bin[p])   ## (see Functions.py)  
@@ -37,24 +38,22 @@ def Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration
 
             ## Generate Laplacian Noise
             tilde_xi = np.zeros((par.num_features, par.num_classes))    
-            if epoch == Total_Epoch - 1:
-                if par.bar_eps_str != "infty":  
-                    start_noise = time.time()                             
-                    tilde_xi = generate_laplacian_noise(par, H, par.total_data, x_train_agent[p], y_train_Bin[p], tilde_xi)  ## (see Functions.py)  
-                    end_noise = time.time()                             
-                    Noise_Time += end_noise - start_noise
-                    Avg_Noise_Mag += np.mean(np.absolute(tilde_xi))  
-                    
+            # if epoch == par.num_local_epoch - 1:
+            if par.bar_eps_str != "infty":  
+                start_noise = time.time()                             
+                tilde_xi = generate_laplacian_noise(par, H, par.total_data, x_train_agent[p], y_train_Bin[p], tilde_xi)  ## (see Functions.py)  
+                end_noise = time.time()                             
+                Noise_Time += end_noise - start_noise
+                Avg_Noise_Mag += np.mean(np.absolute(tilde_xi))  
+                
             ## Update Z_val      
             if par.Algorithm =="ObjP":                   
                 par.eta = float(par.a_str) / math.sqrt(iteration+1)  
                 Z_Prev = par.Z_val[p]
                 Temp = (1.0/(par.rho + (1.0/par.eta)))*(-grad + par.rho*par.W_val + par.Lambdas_val[p] - tilde_xi + (1.0/par.eta)*Z_Prev)                    
-                Z_Change += np.absolute(Z_Prev - Temp)                   
-                par.Z_val[p] = Temp         
-                ## bound constraints
-                par.Z_val = bound_constraints(par.Z_val)
-                
+                Z_Change += np.absolute(Z_Prev - Temp)                                    
+                temp_sum += bound_constraints(Temp, par.bound) 
+
 
             if par.Algorithm =="ObjT":                    
                 par.eta = float(par.a_str) / (iteration+1)*(iteration+1)
@@ -64,8 +63,7 @@ def Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration
                 Z_Change += np.absolute(Z_Prev  - Temp)              
                 par.Z_val[p] = Temp
 
-                ## bound constraints
-                par.Z_val = bound_constraints(par.Z_val)
+        par.Z_val[p] = temp_sum/par.num_local_epoch
                 
             
     end = time.time()      
@@ -82,10 +80,11 @@ def Base_First_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, Itera
         Temp = (np.arange(par.num_classes) == y_train_agent[p][...,None]).astype(int) ## Ip X K
         y_train_Bin.append(Temp)
     
-    Z_Change = 0; Avg_Noise_Mag = 0; Grad_Time = 0; Noise_Time = 0; Total_Epoch = 5;
+    Z_Change = 0; Avg_Noise_Mag = 0; Grad_Time = 0; Noise_Time = 0;  
     for p in range(par.split_number):                
         start_grad = time.time()                             
-        for epoch in range(Total_Epoch):
+        temp_sum = np.zeros_like(par.Z_val[p])   
+        for epoch in range(par.num_local_epoch):
             ## Hypothesis
             H=calculate_hypothesis(par.Z_val[p], x_train_agent[p]) ## I_p x K matrix        
             ## Gradient                                         
@@ -99,10 +98,9 @@ def Base_First_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, Itera
             Temp = (1.0/(par.rho + (1.0/par.eta)))*(-grad + par.rho*par.W_val + par.Lambdas_val[p] + (1.0/par.eta)*par.Z_val[p])                                
             
             Z_Change += np.absolute(par.Z_val[p] - Temp)                                    
-            par.Z_val[p] = Temp
-
+            
             ## bound constraints
-            par.Z_val = bound_constraints(par.Z_val)                
+            Temp_1 = bound_constraints(Temp, par.bound)       
             
             ## Generate Matrix Normal Noise
             tilde_xi = np.zeros((par.num_features, par.num_classes))  
@@ -112,8 +110,12 @@ def Base_First_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, Itera
                 end_noise = time.time()                             
                 Noise_Time += end_noise - start_noise
 
-                par.Z_val[p] += tilde_xi
+                Temp_1 += tilde_xi
+
             Avg_Noise_Mag += np.mean(np.absolute(tilde_xi))        
+
+            temp_sum += Temp_1
+        par.Z_val[p] = temp_sum/par.num_local_epoch
 
     end = time.time()                 
     Avg_Noise_Mag = Avg_Noise_Mag/par.split_number

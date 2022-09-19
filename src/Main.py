@@ -8,7 +8,7 @@ from gpuinfo import GPUInfo
 ## Differentially Private Inexact ADMM for solving a distributed ERM with a multiclass logistic regression loss function 
 #################################################################################################################################################
 
-def main(Instance, Agent, Algorithm, Hyperparameter, ScalingConst, Epsilon, TrainingSteps, DisplaySteps):
+def main(Instance, Agent, Algorithm, Hyperparameter, ScalingConst, Epsilon, TrainingSteps, DisplaySteps, LocalEpoch, Bound):
   
   GPU = GPUInfo.check_empty() # Check if GPU is used.
   print("**********************GPU=", GPU)
@@ -23,7 +23,9 @@ def main(Instance, Agent, Algorithm, Hyperparameter, ScalingConst, Epsilon, Trai
   par.training_steps = int(TrainingSteps)
   par.display_step = int(DisplaySteps)
   par.gamma = 1e-6  ## regularizer parameter  
-  
+  par.num_local_epoch = int(LocalEpoch)
+  par.bound = float(Bound)
+
   ## Read Instance
   if par.Instance =="MNIST":            
     x_test, y_test, x_train_new, y_train_new, x_train_agent, y_train_agent = Read_MNIST(par, Agent)   
@@ -35,7 +37,7 @@ def main(Instance, Agent, Algorithm, Hyperparameter, ScalingConst, Epsilon, Trai
   
   #### Write output  
   foldername = "Outputs"  
-  filename = 'Results_%s_Agent_%s_%s_rho_%s_a_%s_eps_%s'%(par.Instance, par.split_number, par.Algorithm, par.rho_str, par.a_str, par.bar_eps_str)
+  filename = 'Results_%s_Agent_%s_%s_rho_%s_a_%s_numlocal_%s_bound_%s_eps_%s'%(par.Instance, par.split_number, par.Algorithm, par.rho_str, par.a_str, par.num_local_epoch, par.bound, par.bar_eps_str)
   
   file_ext = '.txt'
   Path = './%s/%s%s'%(foldername,filename, file_ext)
