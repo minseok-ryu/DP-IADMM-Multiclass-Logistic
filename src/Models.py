@@ -51,7 +51,10 @@ def Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration
                 Z_Prev = par.Z_val[p]
                 Temp = (1.0/(par.rho + (1.0/par.eta)))*(-grad + par.rho*par.W_val + par.Lambdas_val[p] - tilde_xi + (1.0/par.eta)*Z_Prev)                    
                 Z_Change += np.absolute(Z_Prev - Temp)                   
-                par.Z_val[p] = Temp            
+                par.Z_val[p] = Temp         
+                ## bound constraints
+                par.Z_val = bound_constraints(par.Z_val)
+                
 
             if par.Algorithm =="ObjT":                    
                 par.eta = float(par.a_str) / (iteration+1)*(iteration+1)
@@ -60,6 +63,10 @@ def Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration
                 Temp = np.clip(Temp, Z_Prev - par.eta, Z_Prev + par.eta)   ## Trust-Region using the infinity norm
                 Z_Change += np.absolute(Z_Prev  - Temp)              
                 par.Z_val[p] = Temp
+
+                ## bound constraints
+                par.Z_val = bound_constraints(par.Z_val)
+                
             
     end = time.time()      
 
@@ -90,9 +97,12 @@ def Base_First_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, Itera
             par.eta = calculate_eta_Base(par, num_data[p], Iteration)                    
             ## Update Z_val
             Temp = (1.0/(par.rho + (1.0/par.eta)))*(-grad + par.rho*par.W_val + par.Lambdas_val[p] + (1.0/par.eta)*par.Z_val[p])                                
-
+            
             Z_Change += np.absolute(par.Z_val[p] - Temp)                                    
             par.Z_val[p] = Temp
+
+            ## bound constraints
+            par.Z_val = bound_constraints(par.Z_val)                
             
             ## Generate Matrix Normal Noise
             tilde_xi = np.zeros((par.num_features, par.num_classes))  

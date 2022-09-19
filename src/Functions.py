@@ -5,6 +5,11 @@ import math
 from scipy.stats import matrix_normal
 import time
  
+def bound_constraints(Z_val):
+    val = 1e-1
+    Z_val = np.clip(Z_val,-val, val)   
+    return Z_val
+
 def calculate_hypothesis(W_val, x_train):
 
     Temp_H = np.exp( np.matmul(x_train, W_val) )
