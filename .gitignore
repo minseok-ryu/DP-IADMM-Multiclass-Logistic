@@ -1,0 +1,16 @@
+note
+data
+Inputs
+Outputs
+run_0.py
+run_1.py
+run_2.py
+run_3.py
+run_4.py
+run_5.py
+run_6.py
+run_7.py
+run.py
+run.sh
+Slurm_outputs/*
+src/__pycache__
