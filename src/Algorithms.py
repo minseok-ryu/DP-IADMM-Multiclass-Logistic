@@ -35,15 +35,18 @@ def DP_IADMM(par, x_train_agent, y_train_agent, x_train_new, y_train_new, x_test
         ### [1] First Block Problem        
         if par.Algorithm == "OutP":                        
             par, Runtime_1, Avg_Noise_Mag, z_change_mean, Noise_Time, Grad_Time  = Base_First_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration) ## see Models.py            
-        else:                    
+        elif par.Algorithm == "ObjP":                    
+            par, Runtime_1 = First_Block_Problem_ClosedForm(par) ## see Models.py   
+        elif par.Algorithm == "OutP_Trial":
             par, Runtime_1 = First_Block_Problem_ClosedForm(par) ## see Models.py   
         
         ### [2] Second Block Problem        
         if par.Algorithm == "OutP":
             par, Runtime_2 = Base_Second_Block_Problem_ClosedForm(par) ## see Models.py           
-        else:
+        elif par.Algorithm == "ObjP":                    
             par, Runtime_2, Avg_Noise_Mag, z_change_mean, Noise_Time, Grad_Time = Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration) ## see Models.py 
-        
+        elif par.Algorithm == "OutP_Trial":
+            par, Runtime_2, Avg_Noise_Mag, z_change_mean, Noise_Time, Grad_Time = Trial_Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration) ## see Models.py 
 
         ### [3] Dual update
         par.Lambdas_val += par.rho*(par.W_val - par.Z_val)        
