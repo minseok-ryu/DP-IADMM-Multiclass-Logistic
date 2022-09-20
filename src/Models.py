@@ -51,8 +51,9 @@ def Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration
                 par.eta = float(par.a_str) / math.sqrt(iteration+1)  
                 Z_Prev = par.Z_val[p]
                 Temp = (1.0/(par.rho + (1.0/par.eta)))*(-grad + par.rho*par.W_val + par.Lambdas_val[p] - tilde_xi + (1.0/par.eta)*Z_Prev)                    
-                Z_Change += np.absolute(Z_Prev - Temp)                                    
-                temp_sum += bound_constraints(Temp, par.bound) 
+                Z_Change += np.absolute(Z_Prev - Temp)    
+                par.Z_val[p] = bound_constraints(Temp, par.bound) 
+                temp_sum += par.Z_val[p]
 
 
             if par.Algorithm =="ObjT":                    
@@ -100,7 +101,7 @@ def Base_First_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, Itera
             Z_Change += np.absolute(par.Z_val[p] - Temp)                                    
             
             ## bound constraints
-            Temp_1 = bound_constraints(Temp, par.bound)       
+            par.Z_val[p] = bound_constraints(Temp, par.bound)       
             
             ## Generate Matrix Normal Noise
             tilde_xi = np.zeros((par.num_features, par.num_classes))  
@@ -110,11 +111,13 @@ def Base_First_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, Itera
                 end_noise = time.time()                             
                 Noise_Time += end_noise - start_noise
 
-                Temp_1 += tilde_xi
+                par.Z_val[p] += tilde_xi
 
             Avg_Noise_Mag += np.mean(np.absolute(tilde_xi))        
 
-            temp_sum += Temp_1
+            temp_sum += par.Z_val[p]
+
+
         par.Z_val[p] = temp_sum/par.num_local_epoch
 
     end = time.time()                 
