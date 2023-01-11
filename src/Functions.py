@@ -89,8 +89,10 @@ def calculate_eta_Base(par,num_data, Iteration, c1, delta):
     if par.bar_eps_str != "infty":      
         par.eta = 1.0 / ( c3 + par.gamma*c4/par.split_number + 4.0*c1*math.sqrt( par.num_features*par.num_classes*(Iteration+1)*math.log(1.25/delta)  )/(num_data*float(par.bar_eps_str)*cw)  )        
     else:
-        par.eta = 1.0 / c3                 
+        par.eta =  1.0 / c3                 
 
+    par.eta *= float(par.a_str)
+    
     return par.eta
 
 def generate_matrix_normal_noise(par, num_data,tilde_xi, c1, delta):

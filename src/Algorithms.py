@@ -47,6 +47,7 @@ def DP_IADMM(par, x_train_agent, y_train_agent, x_train_new, y_train_new, x_test
             par, Runtime_2, Avg_Noise_Mag, z_change_mean, Noise_Time, Grad_Time = Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration) ## see Models.py 
         elif par.Algorithm == "OutP_Trial":
             par, Runtime_2, Avg_Noise_Mag, z_change_mean, Noise_Time, Grad_Time = Trial_Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration) ## see Models.py 
+         
 
         ### [3] Dual update
         par.Lambdas_val += par.rho*(par.W_val - par.Z_val)        
