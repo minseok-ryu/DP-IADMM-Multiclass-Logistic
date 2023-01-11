@@ -41,9 +41,10 @@ def Second_Block_Problem_ClosedForm(par, x_train_agent, y_train_agent, iteration
             # if epoch == par.num_local_epoch - 1:
             if par.bar_eps_str != "infty":  
                 start_noise = time.time()                             
+                
                 # tilde_xi = generate_laplacian_noise(par, H, par.total_data, x_train_agent[p], y_train_Bin[p], tilde_xi)  ## (see Functions.py)  
+                
                 # tilde_xi = generate_gaussian_noise(par, H, par.total_data, x_train_agent[p], y_train_Bin[p], tilde_xi)  ## (see Functions.py)  
-
                 
                 ## global sensitivity
                 c1 = math.sqrt( par.num_features*par.num_classes )                

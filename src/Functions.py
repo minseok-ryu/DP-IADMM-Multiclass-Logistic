@@ -32,22 +32,30 @@ def calculate_gradient(par, num_data, H, x_train, y_train_Bin):
     
     return grad
 
-def calculate_residual(par):
-    Temp = np.absolute(par.W_val - par.Z_val)
-    residual = np.sum(Temp) / par.split_number
-    return residual
-def generate_gaussian_noise(par, H, num_data, x_train, y_train_Bin, tilde_xi):
-    delta = 1e-6
-    
+def compute_local_ub_gradient(par, H, num_data, x_train, y_train_Bin):
+
     H_hat=np.subtract(H, y_train_Bin)    ## I_p X K matrix
 
     x_train_sum = np.sum( np.square(x_train), axis = 1)
     H_hat_sum = np.sum( np.square(H_hat), axis = 1)
     x_train_H_hat= np.sqrt( np.multiply(x_train_sum,H_hat_sum) / np.square(num_data))
-    bar_lambda =  np.max(x_train_H_hat)/float(par.bar_eps_str)    
+
+    c1 = np.max(x_train_H_hat)
+
+    return c1
+
+def calculate_residual(par):
+    Temp = np.absolute(par.W_val - par.Z_val)
+    residual = np.sum(Temp) / par.split_number
+    return residual
+def generate_gaussian_noise(par, H, num_data, x_train, y_train_Bin, tilde_xi):
     
-    tilde_xi_shape = np.sqrt( 2.0 * np.log(1.25/delta ) ) * bar_lambda 
-    tilde_xi = np.random.normal( par.M, tilde_xi_shape, [par.num_features, par.num_classes])    
+    
+    c1 = compute_local_ub_gradient(par, H, num_data, x_train, y_train_Bin)
+ 
+    sigma = np.sqrt( 2.0 * np.log(1.25/ 1e-6 ) ) * (c1/float(par.bar_eps_str) )
+
+    tilde_xi = np.random.normal( par.M, sigma, [par.num_features, par.num_classes])    
 
     return tilde_xi    
  
