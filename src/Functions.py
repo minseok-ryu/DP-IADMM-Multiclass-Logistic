@@ -36,6 +36,22 @@ def calculate_residual(par):
     Temp = np.absolute(par.W_val - par.Z_val)
     residual = np.sum(Temp) / par.split_number
     return residual
+def generate_gaussian_noise(par, H, num_data, x_train, y_train_Bin, tilde_xi):
+    delta = 1e-6
+    
+    H_hat=np.subtract(H, y_train_Bin)    ## I_p X K matrix
+
+    x_train_sum = np.sum( np.square(x_train), axis = 1)
+    H_hat_sum = np.sum( np.square(H_hat), axis = 1)
+    x_train_H_hat= np.sqrt( np.multiply(x_train_sum,H_hat_sum) / np.square(num_data))
+    bar_lambda =  np.max(x_train_H_hat)/float(par.bar_eps_str)    
+    
+    tilde_xi_shape = np.sqrt( 2.0 * np.log(1.25/delta ) ) * bar_lambda 
+    tilde_xi = np.random.normal( par.M, tilde_xi_shape, [par.num_features, par.num_classes])    
+
+    return tilde_xi    
+ 
+
 
 def generate_laplacian_noise(par, H, num_data, x_train, y_train_Bin, tilde_xi):
     
@@ -74,12 +90,16 @@ def calculate_eta_Base(par,num_data, Iteration):
     return par.eta
 
 def generate_matrix_normal_noise(par, num_data,tilde_xi):
-    c1 = num_data*1
+    # c1 = num_data*1
+    # print(c1)
+    c1 = math.sqrt( par.num_features*par.num_classes )
+    # print(c1)
+    # stop
     delta = 1e-6  ## 1e-308, 1e-6
 
     sigma = 2*c1*math.sqrt(2*math.log(1.25/delta)) / (num_data*float(par.bar_eps_str)*(par.rho + 1.0/par.eta))    
 
-    tilde_xi_shape = par.M + sigma*sigma  
+    tilde_xi_shape = par.M + sigma
     tilde_xi = np.random.normal( par.M, tilde_xi_shape, [par.num_features, par.num_classes])
     
     return tilde_xi

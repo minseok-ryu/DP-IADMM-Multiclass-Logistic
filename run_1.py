@@ -29,14 +29,16 @@ from Main import *
 ##   Display_step = \{ "200", "5000", "10000" \}  
    
 ## Example:
-
-# for eps in ["0.1", "infty"]:
-#     for bound in ["1e1", "1e2"]:
+ 
+# for bound in ["1e-0", "1e-1",  "1e-2"]:
+#     for eps in ["infty", "5.0", "1.0", "0.1", "0.05", "0.01"]:      
 #         main("MNIST","10", "OutP", "dynamic_1", "1.0", eps, "5000", "100",  "1", bound) 
 #         main("MNIST","10", "OutP", "dynamic_1", "1.0", eps, "5000", "100",  "5", bound) 
 
 
-for bound in ["1e1", "1e-0", "1e-1"]:
-    for eps in ["0.1", "0.05"]:    
-        main("FEMNIST","small", "OutP", "dynamic_1", "100.0", eps, "5000", "100",  "1", bound) 
-        main("FEMNIST","small", "OutP", "dynamic_1", "100.0", eps, "5000", "100",  "5", bound) 
+# main("MNIST","10", "OutP", "dynamic_1", "1.0", "0.01", "1000", "100",  "1", "0.1") 
+
+
+main("MNIST","10", "ObjP", "dynamic_1", "1.0", "0.01", "1000", "100",  "5", "0.1") 
+
+# main("MNIST","10", "OutP_Trial", "dynamic_1", "1.0", "0.01", "5000", "100",  "1", "0.1") 
