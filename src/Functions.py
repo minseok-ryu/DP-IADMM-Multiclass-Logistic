@@ -38,7 +38,7 @@ def compute_local_ub_gradient(par, H, num_data, x_train, y_train_Bin):
 
     x_train_sum = np.sum( np.square(x_train), axis = 1)
     H_hat_sum = np.sum( np.square(H_hat), axis = 1)
-    x_train_H_hat= np.sqrt( np.multiply(x_train_sum,H_hat_sum) / np.square(num_data))
+    x_train_H_hat= np.sqrt( np.multiply(x_train_sum,H_hat_sum) )
 
     c1 = np.max(x_train_H_hat)
 
@@ -48,14 +48,17 @@ def calculate_residual(par):
     Temp = np.absolute(par.W_val - par.Z_val)
     residual = np.sum(Temp) / par.split_number
     return residual
-def generate_gaussian_noise(par, H, num_data, x_train, y_train_Bin, tilde_xi):
-    
+
+def generate_gaussian_noise(par, H, num_data, x_train, y_train_Bin, tilde_xi, delta):   
     
     c1 = compute_local_ub_gradient(par, H, num_data, x_train, y_train_Bin)
  
-    sigma = np.sqrt( 2.0 * np.log(1.25/ 1e-6 ) ) * (c1/float(par.bar_eps_str) )
+    sigma = math.sqrt(2*math.log(1.25/delta)) * c1 / (par.total_data * float(par.bar_eps_str))
 
     tilde_xi = np.random.normal( par.M, sigma, [par.num_features, par.num_classes])    
+
+    print("c1=", c1)
+    print("sigma=", sigma)
 
     return tilde_xi    
  
@@ -77,11 +80,8 @@ def generate_laplacian_noise(par, H, num_data, x_train, y_train_Bin, tilde_xi):
     
     return tilde_xi
 
-def calculate_eta_Base(par,num_data, Iteration):
+def calculate_eta_Base(par,num_data, Iteration, c1, delta):
     
-    delta = 1e-6  ## (epsilon, delta)-differential privacy
-    
-    c1 = math.sqrt( par.num_features*par.num_classes )
     c3 = par.num_features*par.num_classes
     c4 = 2.0
     cw = par.num_features*par.num_classes
@@ -93,11 +93,8 @@ def calculate_eta_Base(par,num_data, Iteration):
 
     return par.eta
 
-def generate_matrix_normal_noise(par, num_data,tilde_xi):
-    
-    c1 = math.sqrt( par.num_features*par.num_classes )
-    
-    delta = 1e-6   
+def generate_matrix_normal_noise(par, num_data,tilde_xi, c1, delta):
+     
 
     sigma = 2*c1*math.sqrt(2*math.log(1.25/delta)) / (num_data*float(par.bar_eps_str)*(par.rho + 1.0/par.eta))    
 
