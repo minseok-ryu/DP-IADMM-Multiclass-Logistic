@@ -35,10 +35,19 @@ from Main import *
 #         main("MNIST","10", "OutP", "dynamic_1", "1.0", eps, "5000", "100",  "1", bound) 
 #         main("MNIST","10", "OutP", "dynamic_1", "1.0", eps, "5000", "100",  "5", bound) 
 
+main("MNIST","10", "OutP", "dynamic_1", "1.0", "0.01", "1000", "100",  "1", "0.1") 
+main("MNIST","10", "ObjP", "dynamic_1", "1.0", "0.01", "1000", "100",  "1", "0.1") 
+main("FEMNIST","small", "OutP", "dynamic_1", "1.0", "0.01", "1000", "100",  "1", "1.0") 
+main("FEMNIST","small", "ObjP", "dynamic_1", "100.0", "0.01", "1000", "100",  "1", "1.0") 
 
-# main("MNIST","10", "OutP", "dynamic_1", "1.0", "0.01", "1000", "100",  "1", "0.1") 
+# for eps in ["1.0", "0.5", "0.1", "0.05", "0.01", "0.005"]:      
+#     main("MNIST","10", "OutP", "dynamic_1", "1.0", "0.005", "1000", "100",  "1", "0.1") 
+#     main("MNIST","10", "OutP", "dynamic_1", "1.0", "0.005", "1000", "100",  "5", "0.1") 
+#     main("MNIST","10", "ObjP", "dynamic_1", "1.0", "0.005", "1000", "100",  "1", "0.1") 
+#     main("MNIST","10", "ObjP", "dynamic_1", "1.0", "0.005", "1000", "100",  "5", "0.1") 
+ 
 
 
-main("MNIST","10", "ObjP", "dynamic_1", "1.0", "0.01", "1000", "100",  "5", "0.1") 
-
-# main("MNIST","10", "OutP_Trial", "dynamic_1", "1.0", "0.01", "5000", "100",  "1", "0.1") 
+# for eps in ["1.0", "0.5", "0.1", "0.05"]:      
+#     main("FEMNIST","small", "OutP", "dynamic_1", "1.0", eps, "1000", "100",  "5", "1.0") 
+#     main("FEMNIST","small", "ObjP", "dynamic_1", "100.0", eps, "1000", "100",  "5", "1.0") 

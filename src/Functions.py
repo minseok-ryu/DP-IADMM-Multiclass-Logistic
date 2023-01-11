@@ -89,9 +89,7 @@ def calculate_eta_Base(par,num_data, Iteration):
     if par.bar_eps_str != "infty":      
         par.eta = 1.0 / ( c3 + par.gamma*c4/par.split_number + 4.0*c1*math.sqrt( par.num_features*par.num_classes*(Iteration+1)*math.log(1.25/delta)  )/(num_data*float(par.bar_eps_str)*cw)  )        
     else:
-        par.eta = 1.0 / c3 
-                
-    par.eta = par.eta * float(par.a_str)
+        par.eta = 1.0 / c3                 
 
     return par.eta
 
